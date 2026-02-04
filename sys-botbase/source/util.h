@@ -1,5 +1,5 @@
 #include <switch.h>
-#define MAX_LINE_LENGTH 344 * 32 * 2
+#define MAX_LINE_LENGTH 16384
 
 extern u64 mainLoopSleepTime;
 extern bool debugResultCodes;
