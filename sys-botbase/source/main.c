@@ -15,8 +15,8 @@
 #include <poll.h>
 
 #define TITLE_ID 0x430000000000000B
-#define HEAP_SIZE 0x00480000
-#define THREAD_SIZE 0x1A000
+#define HEAP_SIZE 0x00280000  // 2.5 MB - Dynamic memory heap for malloc/calloc. Limits: peek ~2.3MB, poke ~2.3MB
+#define THREAD_SIZE 0x10000   // 64 KB per thread stack
 #define VERSION_S "2.41"
 
 typedef enum {

@@ -7,6 +7,8 @@
 #include "commands.h"
 #include "util.h"
 
+#define MAX_META_STATUS_COUNT 32
+
 
 //Controller:
 bool bControllerIsInitialised = false;
@@ -26,7 +28,7 @@ u32 fingerDiameter = 50;
 HiddbgHdlsSessionId sessionId = {0};
 bool initflag=0;
 u8 *workmem = NULL;
-size_t workmem_size = 0x1000;
+size_t workmem_size = 0x800; // 2KB is sufficient for HID work buffer; aligned to 4KB page boundary during allocation
 
 void attach()
 {
@@ -89,8 +91,8 @@ u64 GetTitleVersion(u64 pid){
 	if (R_FAILED(rc)) 
         fatalThrow(rc);
 
-    NsApplicationContentMetaStatus *MetaStatus = malloc(sizeof(NsApplicationContentMetaStatus[100U]));
-    rc = nsListApplicationContentMetaStatus(getTitleId(pid), 0, MetaStatus, 100, &out);
+    NsApplicationContentMetaStatus *MetaStatus = malloc(sizeof(NsApplicationContentMetaStatus[MAX_META_STATUS_COUNT]));
+    rc = nsListApplicationContentMetaStatus(getTitleId(pid), 0, MetaStatus, MAX_META_STATUS_COUNT, &out);
     if (R_FAILED(rc) && debugResultCodes)
         printf("nsListApplicationContentMetaStatus: %d\n", rc);
     for (int i = 0; i < out; i++) {
@@ -227,6 +229,8 @@ void detachController()
 
 void poke(u64 offset, u64 size, u8* val)
 {
+    // Write memory operation - 'val' buffer must fit in heap
+    // Practical limit: ~2.3 MB, but command-line parsing limits to ~16KB typically
     attach();
     writeMem(offset, size, val);
     detach();
@@ -241,6 +245,8 @@ void writeMem(u64 offset, u64 size, u8* val)
 
 void peek(u64 offset, u64 size)
 {
+    // Direct allocation mode: allocates 'size' bytes from heap
+    // Practical limit: ~2.3 MB (depends on HEAP_SIZE and current allocations)
     u8 *out = malloc(sizeof(u8) * size);
     attach();
     readMem(out, offset, size);
@@ -257,6 +263,8 @@ void peek(u64 offset, u64 size)
 
 void peekInfinite(u64 offset, u64 size)
 {
+    // Streaming mode: uses fixed 16KB buffer for unlimited size reads
+    // No practical size limit - can read GBs of memory
     u64 sizeRemainder = size;
     u64 totalFetched = 0;
     u64 i;
