@@ -26,7 +26,7 @@ u32 fingerDiameter = 50;
 HiddbgHdlsSessionId sessionId = {0};
 bool initflag=0;
 u8 *workmem = NULL;
-size_t workmem_size = 0x1000;
+size_t workmem_size = 0x800;
 
 void attach()
 {
@@ -176,7 +176,7 @@ void initController()
         printf("hiddbgInitialize(): 0x%x\n", rc);
     }
     else {
-        workmem = aligned_alloc(0x1000, workmem_size);
+        workmem = aligned_alloc(0x800, workmem_size);
         if (workmem) initflag = 1;
         else printf("workmem alloc failed\n");
     }    

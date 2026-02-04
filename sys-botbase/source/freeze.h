@@ -1,5 +1,5 @@
 #include <switch.h>
-#define FREEZE_DIC_LENGTH 255
+#define FREEZE_DIC_LENGTH 128
 
 typedef struct {
 	char state;
