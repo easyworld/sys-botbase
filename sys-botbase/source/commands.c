@@ -229,6 +229,8 @@ void detachController()
 
 void poke(u64 offset, u64 size, u8* val)
 {
+    // Write memory operation - 'val' buffer must fit in heap
+    // Practical limit: ~2.3 MB, but command-line parsing limits to ~16KB typically
     attach();
     writeMem(offset, size, val);
     detach();
@@ -243,6 +245,8 @@ void writeMem(u64 offset, u64 size, u8* val)
 
 void peek(u64 offset, u64 size)
 {
+    // Direct allocation mode: allocates 'size' bytes from heap
+    // Practical limit: ~2.3 MB (depends on HEAP_SIZE and current allocations)
     u8 *out = malloc(sizeof(u8) * size);
     attach();
     readMem(out, offset, size);
@@ -259,6 +263,8 @@ void peek(u64 offset, u64 size)
 
 void peekInfinite(u64 offset, u64 size)
 {
+    // Streaming mode: uses fixed 16KB buffer for unlimited size reads
+    // No practical size limit - can read GBs of memory
     u64 sizeRemainder = size;
     u64 totalFetched = 0;
     u64 i;
