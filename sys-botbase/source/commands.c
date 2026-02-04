@@ -7,6 +7,8 @@
 #include "commands.h"
 #include "util.h"
 
+#define MAX_META_STATUS_COUNT 32
+
 
 //Controller:
 bool bControllerIsInitialised = false;
@@ -89,8 +91,8 @@ u64 GetTitleVersion(u64 pid){
 	if (R_FAILED(rc)) 
         fatalThrow(rc);
 
-    NsApplicationContentMetaStatus *MetaStatus = malloc(sizeof(NsApplicationContentMetaStatus[32U]));
-    rc = nsListApplicationContentMetaStatus(getTitleId(pid), 0, MetaStatus, 32, &out);
+    NsApplicationContentMetaStatus *MetaStatus = malloc(sizeof(NsApplicationContentMetaStatus[MAX_META_STATUS_COUNT]));
+    rc = nsListApplicationContentMetaStatus(getTitleId(pid), 0, MetaStatus, MAX_META_STATUS_COUNT, &out);
     if (R_FAILED(rc) && debugResultCodes)
         printf("nsListApplicationContentMetaStatus: %d\n", rc);
     for (int i = 0; i < out; i++) {
@@ -176,7 +178,7 @@ void initController()
         printf("hiddbgInitialize(): 0x%x\n", rc);
     }
     else {
-        workmem = aligned_alloc(0x800, workmem_size);
+        workmem = aligned_alloc(0x1000, workmem_size);
         if (workmem) initflag = 1;
         else printf("workmem alloc failed\n");
     }    
