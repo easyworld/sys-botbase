@@ -89,8 +89,8 @@ u64 GetTitleVersion(u64 pid){
 	if (R_FAILED(rc)) 
         fatalThrow(rc);
 
-    NsApplicationContentMetaStatus *MetaStatus = malloc(sizeof(NsApplicationContentMetaStatus[100U]));
-    rc = nsListApplicationContentMetaStatus(getTitleId(pid), 0, MetaStatus, 100, &out);
+    NsApplicationContentMetaStatus *MetaStatus = malloc(sizeof(NsApplicationContentMetaStatus[32U]));
+    rc = nsListApplicationContentMetaStatus(getTitleId(pid), 0, MetaStatus, 32, &out);
     if (R_FAILED(rc) && debugResultCodes)
         printf("nsListApplicationContentMetaStatus: %d\n", rc);
     for (int i = 0; i < out; i++) {
