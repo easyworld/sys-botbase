@@ -28,7 +28,7 @@ u32 fingerDiameter = 50;
 HiddbgHdlsSessionId sessionId = {0};
 bool initflag=0;
 u8 *workmem = NULL;
-size_t workmem_size = 0x800;
+size_t workmem_size = 0x800; // 2KB is sufficient for HID work buffer; aligned to 4KB page boundary during allocation
 
 void attach()
 {

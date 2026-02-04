@@ -1,5 +1,5 @@
 #include <switch.h>
-#define MAX_LINE_LENGTH 16384
+#define MAX_LINE_LENGTH 16384  // 16KB buffer for socket reads and memory peeks (reduced from 22016 to optimize memory)
 
 extern u64 mainLoopSleepTime;
 extern bool debugResultCodes;
